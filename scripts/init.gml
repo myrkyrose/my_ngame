@@ -13,6 +13,10 @@ enum cursors {
     pointer = 2
 };
 
+attack_id = -1;
+attack_delta = 0;
+attack_isdelta = false;
+attack_enemy = false;
 
 randomize();
 

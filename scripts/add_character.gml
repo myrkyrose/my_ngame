@@ -4,6 +4,7 @@
 var map = ds_map_create();
 map[? 'skin_id'] = argument0;
 map[? 'max_hp'] = ds_map_find_value(skin[map[? 'skin_id']], 'hp');
+map[? 'damage'] = 1;
 map[? 'hp'] = map[? 'max_hp'];
 map[? 'name'] = argument1;
 map[? 'class_id'] = argument2;
