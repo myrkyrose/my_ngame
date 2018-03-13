@@ -13,6 +13,9 @@ enum cursors {
     pointer = 2
 };
 
+sprStep_friend = add_sprite(textStep, 0, 0, 8, 8, 0, 0);
+sprStep_enemy = add_sprite(textStep, 8, 0, 8, 8, 0, 0);
+
 attack_id = -1;
 attack_delta = 0;
 attack_isdelta = false;
@@ -25,9 +28,18 @@ class = vec('hunter', 'warrior', 'wizard');
 
 count_body = 0;
 count_skin = 0;
+count_weapon = 0;
 // броня:
-add_body('Frog Armor', 2, add_sprite(textFaces, 0, 9, 10, 8, 5, 0));
-add_body('Pig Armor', 5, add_sprite(textFaces, 10, 9, 10, 8, 5, 0));
+add_body('Iron Armor', 2, 0, add_sprite(textBody, 0, 0, 14, 9, 7, 1));
+add_body('Hunter Armor', 5, 1, add_sprite(textBody, 14, 0, 11, 8, 6, 0));
+add_body('Wizard Mantia', 0, 2, add_sprite(textBody, 25, 0, 12, 8, 6, 0));
+add_body('Wizard Armor', 4, 2, add_sprite(textBody, 0, 9, 13, 8, 13 / 2 + 2, 0));
+add_body('Silver Armor', 8, 1, add_sprite(textBody, 0, 17, 16, 12, 8, 1));
+add_body('Dragon Armor', 14, 2, add_sprite(textBody, 16, 8, 28, 11, 14, 3));
+// оружие:
+add_weapon('Wizard Trof', 4, 2, add_sprite(textWeapon, 0, 0, 8, 15, 4, 15));
+add_weapon('Advance Wizard Trof', 8, 2, add_sprite(textWeapon, 8, 0, 8, 15, 4, 15));
+add_weapon('Prof Wizard Trof', 16, 2, add_sprite(textWeapon, 16, 0, 8, 15, 4, 15));
 // рассы:
 add_skin('Frog', 50, add_sprite(textFaces, 0, 0, 12, 9, 6, 9), add_sprite(textFaces, 0, 9, 10, 8, 5, 0));
 add_skin('Pig', 75, add_sprite(textFaces, 12, 0, 16, 9, 8, 9), add_sprite(textFaces, 10, 9, 10, 8, 5, 0));

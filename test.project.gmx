@@ -8,10 +8,10 @@
   <sprites name="sprites"/>
   <backgrounds name="background">
     <background>background\textDefault</background>
-    <background>background\textHunter</background>
-    <background>background\textWarrior</background>
-    <background>background\textWizard</background>
     <background>background\textFaces</background>
+    <background>background\textBody</background>
+    <background>background\textWeapon</background>
+    <background>background\textStep</background>
   </backgrounds>
   <paths name="paths"/>
   <scripts name="scripts">
@@ -22,11 +22,12 @@
         <script>scripts\add_enemy.gml</script>
         <script>scripts\add_character.gml</script>
         <script>scripts\delete.gml</script>
-        <script>scripts\on_damage.gml</script>
         <scripts name="add">
           <script>scripts\add_body.gml</script>
           <script>scripts\add_skin.gml</script>
+          <script>scripts\add_weapon.gml</script>
         </scripts>
+        <script>scripts\draw_character.gml</script>
       </scripts>
       <script>scripts\init.gml</script>
       <script>scripts\update.gml</script>

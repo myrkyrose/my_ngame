@@ -1,11 +1,5 @@
 /// draw()
 is_pause = is_shadow;
-
-/*var map = skin[1];
-draw_sprite(map[? 'head'], 0, 50, 50);
-draw_sprite(map[? 'body'], 0, 50, 50);*/
-
-
 if (!is_battle) {
     // игрок:
     if (!is_pause) {
@@ -61,8 +55,13 @@ if (!is_battle) {
                                 case true:
                                     if (attack_delta > 0) attack_delta -= .1;
                                         else {
-                                            var other_enemy = control_pl[attack_id];
-                                            other_enemy[? 'hp'] -= nmap[? 'damage'];
+                                            var other_enemy = control_pl[attack_id], damage = nmap[? 'damage'];
+                                            if (nmap[? 'weapon'] != -1) damage = ds_map_find_value(weapon[nmap[? 'weapon']], 'damage');
+                                            if (other_enemy[? 'body'] != -1) {
+                                                var other_body = body[other_enemy[? 'body']];
+                                                damage -= other_body[? 'armor'];
+                                            }
+                                            other_enemy[? 'hp'] -= clamp(damage, 0, 999);
                                             attack_id = -1;
                                             attack_isdelta = false;
                                             ds_list_add(stack, ds_list_find_value(stack, 0));
@@ -72,18 +71,16 @@ if (!is_battle) {
                                 break;
                             }
                         }
-                        var m_skin = skin[nmap[? 'skin_id']], body_h = sprite_get_height(m_skin[? 'body']);
-                        draw_sprite(m_skin[? 'head'], 0, c_enemy[? 'x'] + npos[0] + (xx - (c_enemy[? 'x'] + npos[0])) * attack_delta * current, c_enemy[? 'y'] + npos[1] - body_h + (yy - (c_enemy[? 'y'] + npos[1] - body_h)) * attack_delta * current);
-                        draw_sprite(m_skin[? 'body'], 0, c_enemy[? 'x'] + npos[0] + (xx - (c_enemy[? 'x'] + npos[0])) * attack_delta * current, c_enemy[? 'y'] + npos[1] - body_h + (yy - (c_enemy[? 'y'] + npos[1] - body_h)) * attack_delta * current);
+                        draw_character(nmap, c_enemy[? 'x'] + npos[0] + (xx - (c_enemy[? 'x'] + npos[0])) * attack_delta * current, c_enemy[? 'y'] + npos[1] + (yy - (c_enemy[? 'y'] + npos[1])) * attack_delta * current, -1);
                         if (!l[0]) { // ход игрока:
-                            if (point_in_rectangle(mouse_x, mouse_y, c_enemy[? 'x'] + npos[0] - 8, c_enemy[? 'y'] + npos[1] - 4, c_enemy[? 'x'] + npos[0] + 8, c_enemy[? 'y'] + npos[1] + 4)) {                                
+                            if (point_in_rectangle(mouse_x, mouse_y, c_enemy[? 'x'] + npos[0] - 8, c_enemy[? 'y'] + npos[1] - 4, c_enemy[? 'x'] + npos[0] + 8, c_enemy[? 'y'] + npos[1] + 4) && attack_id == -1) {
                                 cursor |= cursors.hover;
-                                draw_text_transformed(mouse_x + 20, mouse_y + 10, '-' + string(ds_map_find_value(control_pl[l[1]], 'damage')), .25, .25, 0);
-                                if (mouse_check_button_pressed(mb_left)) {
-                                    if (attack_id == -1) {
-                                        attack_id = i;
-                                        attack_enemy = false;
-                                    }
+                                var nnmap = control_pl[l[1]], damage = nnmap[? 'damage'];
+                                if (nnmap[? 'weapon'] != -1) damage = ds_map_find_value(weapon[nnmap[? 'weapon']], 'damage');
+                                draw_text_transformed(mouse_x + 4, mouse_y + 1, '-' + string(damage), .25, .25, 0);
+                                if (mouse_check_button_released(mb_left)) {
+                                    attack_id = i;
+                                    attack_enemy = false;
                                 }
                             }
                         } else { // ход врага:
@@ -136,8 +133,13 @@ if (!is_battle) {
                                         case true:
                                             if (attack_delta > 0) attack_delta -= .1;
                                                 else {
-                                                    var other_enemy = enemy_list[attack_id];
-                                                    other_enemy[? 'hp'] -= nmap[? 'damage'];
+                                                    var other_enemy = enemy_list[attack_id], damage = nmap[? 'damage'];
+                                                    if (nmap[? 'weapon'] != -1) damage = ds_map_find_value(weapon[nmap[? 'weapon']], 'damage');
+                                                    if (other_enemy[? 'body'] != -1) {
+                                                        var other_body = body[other_enemy[? 'body']];
+                                                        damage -= other_body[? 'armor'];
+                                                    }
+                                                    other_enemy[? 'hp'] -= clamp(damage, 0, 999);
                                                     attack_id = -1;
                                                     attack_isdelta = false;
                                                     ds_list_add(stack, ds_list_find_value(stack, 0));
@@ -149,11 +151,8 @@ if (!is_battle) {
                                 draw_rectangle(pl_x - npos[0] - 8, pl_y + npos[1] - 4, pl_x - npos[0] + 8, pl_y + npos[1] + 4, true);
                             }
                         }
-                        var m_skin = skin[nmap[? 'skin_id']], body_h = sprite_get_height(m_skin[? 'body']);
-                        draw_sprite(m_skin[? 'head'], 0, pl_x - npos[0] + (xx - (pl_x - npos[0])) * attack_delta * current, pl_y + npos[1] - body_h + (yy - (pl_y + npos[1] - body_h)) * attack_delta * current);
-                        draw_sprite(m_skin[? 'body'], 0, pl_x - npos[0] + (xx - (pl_x - npos[0])) * attack_delta * current, pl_y + npos[1] - body_h + (yy - (pl_y + npos[1] - body_h)) * attack_delta * current);
+                        draw_character(nmap, pl_x - npos[0] + (xx - (pl_x - npos[0])) * attack_delta * current, pl_y + npos[1] + (yy - (pl_y + npos[1])) * attack_delta * current, 1);
                     } else {
-                        
                         for (var j = 0, r; j < ds_list_size(stack); j++) {
                             r = stack[| j];
                             if (!r[0]) {
@@ -167,38 +166,30 @@ if (!is_battle) {
                         count_player--;
                     }
                 }
-                for (var i = 0, l, nmap; i < ds_list_size(stack); i++) {
-                    l = stack[| i];
+                var xx = view_xview + view_wview * .5 - 1.5 * 12, spr = vec(sprStep_friend, sprStep_enemy);
+                for (var i = 0, l, nmap, pos = vec(ds_list_size(stack) - 1, 0, clamp(1, 0, ds_list_size(stack) - 1)); i < 3; i++) { // итог хода:
+                    l = stack[| pos[i]];
                     switch(l[0]) {
-                        case false: // друзья:
-                            nmap = control_pl[l[1]];
-                            draw_set_colour($ffffff);
-                            draw_text_transformed(view_xview + 8 + 12 * i + 6, view_yview + view_hview * .8 + 10, nmap[? 'name'] + string(l[1]), .1, .1, 0);
-                        break;
-                        case true: // друзья:
-                            nmap = enemy_list[l[1]];
-                            draw_set_colour($ff0000);
-                            draw_text_transformed(view_xview + 8 + 12 * i + 6, view_yview + view_hview * .8 + 10, nmap[? 'name'] + string(l[1]), .1, .1, 0);
-                        break;
+                        case false: nmap = control_pl[l[1]]; break;
+                        case true: nmap = enemy_list[l[1]]; break;
                     }
+                    var m_skin = skin[nmap[? 'skin_id']];
+                    draw_sprite_stretched_ext(spr[l[0]], 0, xx + 12 * i - 1, view_yview + 16 - 1, 10, 10, c_white, 1 - !i * .75);
+                    draw_sprite_stretched_ext(m_skin[? 'head'], 0, xx + 12 * i, view_yview + 16, 8, 8, c_white, 1 - !i * .75);
                 }
             } else { // генерация:
                 var f_counter = count_player, e_counter = battle_count;
-                while(ds_list_size(stack) < (count_player + battle_count - 1)) {
-                    for (var i = 0, count = 0; i < ds_list_size(old_stack); i++) { 
-                        if (old_stack[| i] == stack_change) {
-                            switch(stack_change) {
-                                case false: 
-                                    count = clamp(count + 1, 0, count_player - 1); break;
-                                case true: 
-                                    
-                                    count = clamp(count + 1, 0, battle_count - 1); 
-                                break;
-                            }
-                        }
+                while(ds_list_size(stack) < (count_player + battle_count)) {
+                    switch(stack_change) {
+                        case false:
+                            if (f_counter != 0)
+                            ds_list_add(stack, vec(stack_change, count_player - f_counter--));
+                        break;
+                        case true:
+                            if (e_counter != 0)
+                            ds_list_add(stack, vec(stack_change, battle_count - e_counter--));
+                        break;
                     }
-                    ds_list_add(stack, vec(stack_change, count));
-                    ds_list_add(old_stack, stack_change);
                     stack_change =! stack_change;
                 }
             }

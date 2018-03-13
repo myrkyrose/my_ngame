@@ -9,8 +9,8 @@ map[? 'hp'] = map[? 'max_hp'];
 map[? 'name'] = argument1;
 map[? 'class_id'] = argument2;
 map[? 'head'] = -1;
-map[? 'body'] = -1;
-map[? 'weapon'] = -1;
+map[? 'body'] = irandom(count_body - 1);
+map[? 'weapon'] = irandom(count_weapon - 1);
 return map;
 
 /*
