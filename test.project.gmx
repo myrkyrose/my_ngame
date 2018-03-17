@@ -7,36 +7,49 @@
   <sounds name="sound"/>
   <sprites name="sprites"/>
   <backgrounds name="background">
-    <background>background\textDefault</background>
     <background>background\textFaces</background>
     <background>background\textBody</background>
     <background>background\textWeapon</background>
-    <background>background\textStep</background>
+    <background>background\textHead</background>
+    <background>background\textGui</background>
   </backgrounds>
   <paths name="paths"/>
   <scripts name="scripts">
     <scripts name="core">
       <scripts name="function">
         <script>scripts\add_sprite.gml</script>
+        <script>scripts\change.gml</script>
         <script>scripts\vec.gml</script>
         <script>scripts\add_enemy.gml</script>
         <script>scripts\add_character.gml</script>
         <script>scripts\delete.gml</script>
         <scripts name="add">
           <script>scripts\add_body.gml</script>
+          <script>scripts\add_head.gml</script>
           <script>scripts\add_skin.gml</script>
           <script>scripts\add_weapon.gml</script>
+          <script>scripts\add_dialog.gml</script>
         </scripts>
         <script>scripts\draw_character.gml</script>
+        <scripts name="gui">
+          <script>scripts\add_ui_button.gml</script>
+          <script>scripts\add_ui_window.gml</script>
+        </scripts>
+        <script>scripts\replace.gml</script>
       </scripts>
       <script>scripts\init.gml</script>
       <script>scripts\update.gml</script>
       <script>scripts\draw.gml</script>
+      <script>scripts\gui.gml</script>
     </scripts>
   </scripts>
+  <fonts name="fonts">
+    <font>fonts\fnt</font>
+  </fonts>
   <objects name="objects">
     <object>objects\obj_system</object>
   </objects>
+  <timelines name="timelines"/>
   <rooms name="rooms">
     <room>rooms\rm_game</room>
   </rooms>

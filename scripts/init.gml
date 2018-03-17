@@ -1,27 +1,44 @@
 /// init()
 
+randomize();
+
+window_id = 0;
 key = 0;
-cursor = 0;
+mouse = 0;
 enum keys {
     up = 1,
     down = 2,
     left = 4,
     right = 8
 };
-enum cursors {
-    hover = 1,
-    pointer = 2
+enum ui {
+    none = 1,
+    window = 2,
+    message = 4,
+    error = 8,
+    dialog = 16
 };
-
-sprStep_friend = add_sprite(textStep, 0, 0, 8, 8, 0, 0);
-sprStep_enemy = add_sprite(textStep, 8, 0, 8, 8, 0, 0);
+ui_state = ui.none;
+enum windows {
+    inv = 1,
+    quest = 2,
+    trade = 3
+};
+enum mouse_event {
+    hover = 1,
+    lclick = 2,
+    rclick = 4
+};
 
 attack_id = -1;
 attack_delta = 0;
 attack_isdelta = false;
 attack_enemy = false;
 
-randomize();
+spr_slot = add_sprite(textGui, 0, 0, 16, 16, 0, 0);
+spr_health = add_sprite(textGui, 16, 0, 7, 6, 4.5, 3);
+
+
 
 names = vec('Donald', 'Robert', 'Jeck', 'Kevin');
 class = vec('hunter', 'warrior', 'wizard');
@@ -29,59 +46,45 @@ class = vec('hunter', 'warrior', 'wizard');
 count_body = 0;
 count_skin = 0;
 count_weapon = 0;
-// броня:
-add_body('Iron Armor', 2, 0, add_sprite(textBody, 0, 0, 14, 9, 7, 1));
-add_body('Hunter Armor', 5, 1, add_sprite(textBody, 14, 0, 11, 8, 6, 0));
-add_body('Wizard Mantia', 0, 2, add_sprite(textBody, 25, 0, 12, 8, 6, 0));
-add_body('Wizard Armor', 4, 2, add_sprite(textBody, 0, 9, 13, 8, 13 / 2 + 2, 0));
-add_body('Silver Armor', 8, 1, add_sprite(textBody, 0, 17, 16, 12, 8, 1));
-add_body('Dragon Armor', 14, 2, add_sprite(textBody, 16, 8, 28, 11, 14, 3));
-// оружие:
-add_weapon('Wizard Trof', 4, 2, add_sprite(textWeapon, 0, 0, 8, 15, 4, 15));
-add_weapon('Advance Wizard Trof', 8, 2, add_sprite(textWeapon, 8, 0, 8, 15, 4, 15));
-add_weapon('Prof Wizard Trof', 16, 2, add_sprite(textWeapon, 16, 0, 8, 15, 4, 15));
-// рассы:
-add_skin('Frog', 50, add_sprite(textFaces, 0, 0, 12, 9, 6, 9), add_sprite(textFaces, 0, 9, 10, 8, 5, 0));
-add_skin('Pig', 75, add_sprite(textFaces, 12, 0, 16, 9, 8, 9), add_sprite(textFaces, 10, 9, 10, 8, 5, 0));
-add_skin('People', 20, add_sprite(textFaces, 28, 0, 12, 11, 6, 11), add_sprite(textFaces, 20, 9, 10, 8, 5, 0));
-is_battle = false;
-battle_id = -1;
-battle_count = 0;
-stack = ds_list_create();
-old_stack = ds_list_create();
-stack_change = 0;
 count_enemy = 0;
 count_player = 5;
+count_head = 0;
+
+// броня:
+add_body('Iron Armor', 2, 0, add_sprite(textBody, 0, 0, 14, 9, 7, 1));
+add_body('Hunter Armor', 1, 1, add_sprite(textBody, 14, 0, 11, 8, 6, 0));
+add_body('Wizard Mantia', 1, 2, add_sprite(textBody, 25, 0, 12, 8, 6, 0));
+add_body('Wizard Armor', 2, 2, add_sprite(textBody, 0, 9, 13, 8, 13 / 2 + 2, 0));
+add_body('Silver Armor', 3, 1, add_sprite(textBody, 0, 17, 16, 12, 8, 1));
+add_body('Dragon Armor', 5, 2, add_sprite(textBody, 16, 8, 28, 11, 14, 3));
+// шлем:
+add_head('Iron Helmet', 1, 0, add_sprite(textHead, 0, 0, 10, 8, 5, 8));
+// оружие:
+add_weapon('Wizard Trof', 2, 2, add_sprite(textWeapon, 0, 0, 8, 15, 4, 15));
+add_weapon('Advance Wizard Trof', 3, 2, add_sprite(textWeapon, 8, 0, 8, 15, 4, 15));
+add_weapon('Prof Wizard Trof', 5, 2, add_sprite(textWeapon, 16, 0, 8, 15, 4, 15));
+// рассы:
+add_skin('Frog', 15, add_sprite(textFaces, 0, 0, 12, 9, 6, 9), add_sprite(textFaces, 0, 9, 10, 8, 5, 0));
+add_skin('Pig', 20, add_sprite(textFaces, 12, 0, 16, 9, 8, 9), add_sprite(textFaces, 10, 9, 10, 8, 5, 0));
+//add_skin('People', 20, add_sprite(textFaces, 28, 0, 12, 11, 6, 11), add_sprite(textFaces, 20, 9, 10, 8, 5, 0));
+//add_skin('Shadow', 10, add_sprite(textFaces, 40, 0, 14, 11, 7, 11), add_sprite(textFaces, 20, 9, 10, 8, 5, 0));
+
+is_battle = false;
+battle_id = -1;
+stack = ds_list_create();
+
 for (var i = 0; i < count_player; i++) control_pl[i] = add_character(irandom(count_skin - 1), names[irandom(array_length_1d(names) - 1)], class[irandom(array_length_1d(class) - 1)]);
 pl_x = 50;
 pl_y = 50;
-pl_sprite = add_sprite(textDefault, 0, 0, 16, 22, 8, 20);
-var map = ds_map_create();
-map[? 'max_hp'] = 100;
-map[? 'hp'] = map[? 'max_hp'];
-map[? 'damage'] = 1;
-map[? 'name'] = 'player';
-map[? 'sprite'] = add_sprite(textDefault, 0, 0, 16, 22, 8, 20);
-map[? 'special'] = vec('fire', 'water');
+pl_sprite = add_sprite(textFaces, 0, 0, 12, 9, 6, 9);
 
 var list;
-for (var i = 0; i < 3; i++) {
-    list[i] = add_character(irandom(count_skin - 1), names[irandom(array_length_1d(names) - 1)], class[irandom(array_length_1d(class) - 1)]);//ds_map_create();
-    //ds_map_copy(list[i], rand[irandom(array_length_1d(rand) - 1)]);
-}
+for (var i = 0; i < 3; i++) list[i] = add_character(irandom(count_skin - 1), names[irandom(array_length_1d(names) - 1)], class[irandom(array_length_1d(class) - 1)]);
+add_enemy(add_sprite(textFaces, 0, 0, 12, 9, 6, 9), 150, 100, list);
+list = 0;
+for (var i = 0; i < 3; i++) list[i] = add_character(irandom(count_skin - 1), names[irandom(array_length_1d(names) - 1)], class[irandom(array_length_1d(class) - 1)]);
+add_enemy(add_sprite(textFaces, 0, 0, 12, 9, 6, 9), 50, 100, list);
 
-add_enemy(add_sprite(textDefault, 0, 0, 16, 22, 8, 20), 100, 100, list);
-/*var nlist;
-var rand = vec(add_character(spr[0], names[irandom(array_length_1d(names) - 1)], 20, 10, 'hunter'),
-               add_character(spr[1] , names[irandom(array_length_1d(names) - 1)], 40, 8, 'warrior'),
-               add_character(spr[2] , names[irandom(array_length_1d(names) - 1)], 15, 5, 'wizard')
-);
-for (var i = 0; i < 4; i++) {
-   nlist[i] = ds_map_create();
-    ds_map_copy(nlist[i], rand[irandom(array_length_1d(rand) - 1)]);
-}
-add_enemy(add_sprite(textDefault, 0, 0, 16, 22, 8, 20), -20, 100, nlist);
-*/
 is_shadow = false;
 shadow_alpha = 0;
 surf_shadow = surface_create(view_wview, view_hview);
